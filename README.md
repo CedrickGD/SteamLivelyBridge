@@ -1,6 +1,6 @@
 # SteamLivelyBridge
 
-Current release: **2.0.0**. See [CHANGELOG.md](CHANGELOG.md) for the changes.
+Current release: **2.0.1**. See [CHANGELOG.md](CHANGELOG.md) for the changes.
 
 A portable Windows PowerShell tool that downloads Wallpaper Engine Workshop content with SteamCMD and prepares wallpapers for Lively Wallpaper. Video and web projects are packaged directly; **scene projects are rendered to video using your installed Wallpaper Engine**.
 

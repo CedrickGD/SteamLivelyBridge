@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1 - 2026-10-19
+
+- Fix the GitHub Actions shell matrix so Windows PowerShell and PowerShell 7 tests run before publishing release packages.
+
 ## 2.0.0 - 2026-10-19
 
 - Convert scene wallpapers into looping MP4s using the installed Wallpaper Engine renderer, then package them for Lively.
