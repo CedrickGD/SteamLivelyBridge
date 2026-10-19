@@ -1,0 +1,41 @@
+name: PowerShell tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  offline-tests:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        shell: [powershell, pwsh]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Check scene capture subprocess handling
+        run: python tests/Test-CaptureEncoding.py
+      - name: Run offline regression suite
+        shell: ${{ matrix.shell }}
+        run: ./tests/Run-Tests.ps1
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: offline-tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package and publish the tested tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          test "$(tr -d '\r\n' < VERSION)" = "${RELEASE_TAG#v}"
+          mkdir -p dist
+          archive="SteamLivelyBridge-${RELEASE_TAG}.zip"
+          git archive --format=zip --prefix=SteamLivelyBridge/ --output="dist/$archive" HEAD
+          (cd dist && sha256sum "$archive" > "$archive.sha256")
+          gh release create "$RELEASE_TAG" "dist/$archive" "dist/$archive.sha256" \
+            --verify-tag --title "SteamLivelyBridge $RELEASE_TAG" \
+            --notes-file CHANGELOG.md --latest
